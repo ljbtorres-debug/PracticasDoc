@@ -1,9 +1,10 @@
 import '../global.css'
-import {Platform, Text, View} from "react-native";
-import {Slot} from "expo-router";
-import {useFonts} from "expo-font";
-import {StatusBar} from "expo-status-bar";
+import { Platform, View } from "react-native";
+import { Slot, Stack } from "expo-router";
+import { useFonts } from "expo-font";
+import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
+import { Drawer } from 'expo-router/drawer';
 
 const isAndroid = Platform.OS === "ios";
 
@@ -12,22 +13,29 @@ if (isAndroid) {
 }
 
 const RootLayout = () => {
-    const [loaded] = useFonts({Inter: require("../assets/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf")});
+    const [loaded] = useFonts({ Inter: require("../assets/fonts/Inter/Inter-Italic-VariableFont_opsz,wght.ttf") });
 
     if (!loaded) {
         return null;
     }
 
     return (
-        <View>
-            <Text className="text-9xl">Header</Text>
+        <Stack>
+            <Stack.Screen
+                name="index"
+                options={{
+                    title: 'Inicio',
+                }}
+            />
 
-            <Slot/>
+            <Stack.Screen
+                name="parameter"
+                options={{
+                    title: 'Parametros',
+                }}
+            />
 
-            <Text>Footer</Text>
-
-            <StatusBar style="auto"></StatusBar>
-        </View>
+        </Stack>
     );
 }
 
