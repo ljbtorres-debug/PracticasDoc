@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 const USUARIOS = [
   { id: "1", email: "teacher@app.com",    password: "1234", rol: "teacher" },
@@ -12,12 +12,17 @@ type AuthContextType = {
   usuario: Usuario | null;
   login: (email: string, password: string) => boolean;
   logout: () => void;
+  ready:boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+  setReady(true);
+}, []);
 
   const login = (email: string, password: string) => {
     const encontrado = USUARIOS.find(
@@ -33,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, login, logout }}>
+    <AuthContext.Provider value={{ usuario, login, logout, ready }}>
       {children}
     </AuthContext.Provider>
   );
