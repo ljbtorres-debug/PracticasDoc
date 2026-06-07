@@ -1,18 +1,14 @@
 import { router } from "expo-router";
-import { Button, Text, View } from "react-native";
+import {View, Text, Button} from "react-native";
 
-
-const App = () => {
-    return (
+export default function HomeTeacher(){
+    return(
         <View>
-            <Text>Pantalla de inicio</Text>
+            <Text>Home Teacher</Text>
             <Button
                 title="Parametros"
                 onPress={() => router.push('/parameter')}
             />
         </View>
     )
-        ;
 }
-
-export default App;

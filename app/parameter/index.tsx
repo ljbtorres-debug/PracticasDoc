@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const Parameter = () => {
+      console.log("Parameter renderizado");
     return (
         <SafeAreaView className='flex-1'>
             <ScrollView 
