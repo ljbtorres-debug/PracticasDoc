@@ -1,7 +1,7 @@
 import { Image, Platform, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
-import { useLogin } from "../../hooks/loginHook/useLogin"; // Importa tu hook (ajusta la ruta si es necesario)
+import { useLogin } from "../../hooks/loginHook/useLogin"; 
 
 const isAndroid = Platform.OS === "android";
 
@@ -10,11 +10,10 @@ if (isAndroid) {
 }
 
 export default function LoginComp() {
-  // Consumimos toda la lógica desde el custom hook
   const { email, setEmail, password, setPassword, handleLogin } = useLogin();
 
   return (
-    <View className="flex-1 bg-background px-container py-10">
+    <View className="flex-1 bg-[#F8F9FC] px-[16px] py-10">
       
       <View className="items-center mb-10">
         <Image
@@ -22,10 +21,10 @@ export default function LoginComp() {
           className="w-28 h-28 mb-4"
           resizeMode="contain"
         />
-        <Text className="text-title font-bold text-text text-center">
+        <Text className="text-[28px] font-bold text-[#1F2937] text-center">
           INICIAR SESIÓN
         </Text>
-        <Text className="text-body text-text-secondary mt-2 text-center">
+        <Text className="text-[16px] text-[#6B7280] mt-2 text-center">
           Bienvenido, ingresa tus credenciales para continuar
         </Text>
       </View>
@@ -33,13 +32,13 @@ export default function LoginComp() {
       {/* FORM */}
       <View className="gap-4">
         <View>
-          <Text className="text-small text-text-secondary mb-1">
+          <Text className="text-[14px] text-[#6B7280] mb-1">
             Correo electrónico
           </Text>
           <TextInput
             placeholder="ejemplo@correo.com"
             placeholderTextColor="#6B7280"
-            className="bg-surface border border-border rounded-input px-inputX py-inputY text-text"
+            className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-[4px] px-[16px] py-[14px] text-[#1F2937]"
             value={email}
             onChangeText={setEmail}
             autoCapitalize="none"
@@ -48,14 +47,14 @@ export default function LoginComp() {
         </View>
 
         <View>
-          <Text className="text-small text-text-secondary mb-1">
+          <Text className="text-[14px] text-[#6B7280] mb-1">
             Contraseña
           </Text>
           <TextInput
             placeholder="********"
             placeholderTextColor="#6B7280"
             secureTextEntry
-            className="bg-surface border border-border rounded-input px-inputX py-inputY text-text"
+            className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-[4px] px-[16px] py-[14px] text-[#1F2937]"
             value={password}
             onChangeText={setPassword}
           />
@@ -64,10 +63,10 @@ export default function LoginComp() {
 
       {/* BOTÓN */}
       <TouchableOpacity 
-        className="bg-primary h-button rounded-button justify-center items-center mt-10"
+        className="bg-[#FE7229] h-[54px] rounded-[14px] justify-center items-center mt-10"
         onPress={handleLogin}
       >
-        <Text className="text-text-light text-body font-semibold">
+        <Text className="text-[#FFFFFF] text-[16px] font-semibold">
           INGRESAR
         </Text>
       </TouchableOpacity>
