@@ -40,6 +40,7 @@ export default function RootLayoutNav() {
       <Stack.Screen name="(student)" options={{ headerShown: false }} />
       <Stack.Screen name="(teacher)" options={{ headerShown: false }} />
       <Stack.Screen name="parameter" options={{ headerShown: false }} />
+      <Stack.Screen name="companies" options={{ headerShown: false }} />
     </Stack>
   );
 }

@@ -9,6 +9,12 @@ export default function HomeTeacher(){
                 title="Parametros"
                 onPress={() => router.push('/parameter')}
             />
+
+            <Text>compania</Text>
+            <Button
+                title="Companias"
+                onPress={() => router.push('/companies')}
+            />
         </View>
     )
 }
