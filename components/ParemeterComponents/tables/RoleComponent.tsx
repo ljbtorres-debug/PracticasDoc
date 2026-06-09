@@ -1,15 +1,15 @@
-import useRole from '@/hooks/useRole';
-import { Role } from '@/interfaces/roleInterface';
+import useRole from '@/hooks/parameterHook/useRole';
+import { Role } from '@/interfaces/ParameterInterfaces/roleInterface';
 import { useState } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 import { Loading } from '../generic/stateComponents/loading';
 import { DataTable } from '../generic/DataTable';
-import Roleform from '../forms/RoleForm';
+import ParameterForm from '../forms/parameterForm';
 
 
 
 const RoleComponent = () => {
-    const { roles, loading, deletedRole, reload } = useRole();
+    const { roles, loading, deletedRole, reload, editRol, newRol, save } = useRole();
     const [modalVisible, setModalVisible] = useState(false);
     const [mode, setMode] = useState<'create' | 'edit'>('create');
     const [selectedRol, setSelectedRol] = useState<Role | null>(null);
@@ -34,11 +34,11 @@ const RoleComponent = () => {
             flex: 2,
             render: (rol: Role) => (
                 <View className="flex-row gap-2">
-                    <Pressable onPress={() => edit(rol)} className='flex justify-center border border-blue-400 rounded-lg m-1 p-0.5'>
+                    <Pressable disabled={save} onPress={() => edit(rol)} className='flex justify-center border border-blue-400 rounded-lg m-1 p-0.5'>
                         <Text className="px-1 text-blue-500">Editar</Text>
                     </Pressable>
-                    <Pressable onPress={() => remove(rol.id)} className='flex justify-center border border-red-400 rounded-lg m-1 p-0.5'>
-                        <Text className=" text-red-500">Eliminar</Text>
+                    <Pressable disabled={save} onPress={() => remove(rol.id)} className='flex justify-center border border-red-400 rounded-lg m-1 p-0.5'>
+                        <Text className=" text-red-500">{save? 'Eliminando...':'Eliminar'}</Text>
                     </Pressable>
                 </View>
             )
@@ -56,6 +56,8 @@ const RoleComponent = () => {
 
         } catch (error) {
             alert(`ocurrio un error al eliminar: ${error}`);
+        }finally{
+            reload()
         }
     }
     const create = () => {
@@ -89,12 +91,18 @@ const RoleComponent = () => {
 
             {modalVisible &&
                 <Modal visible={modalVisible}>
-                    <Roleform
-                        rol={selectedRol}
+                    <ParameterForm
                         mode={mode}
+                        item={selectedRol}
+                        title="Rol"
+                        placeholder="Ingrese el nombre del rol"
+                        loading={save}
+                        create={newRol}
+                        update={editRol}
                         onClose={() => setModalVisible(false)}
-                        onSuccess={() => reload()}
-                    />
+                        onSuccess={reload}
+                    >
+                    </ParameterForm>
                 </Modal>
             }
 
