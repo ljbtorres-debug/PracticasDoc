@@ -1,4 +1,4 @@
-import { CreateRole, Role } from "@/interfaces/roleInterface"
+import { CreateRole,Role } from "@/interfaces/ParameterInterfaces/roleInterface";
 import { createRol, getRoles, removeRole, updateRol } from "@/services/parameterService/role.services";
 import { useEffect, useState } from "react"
 

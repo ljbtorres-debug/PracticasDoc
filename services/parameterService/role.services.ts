@@ -1,4 +1,4 @@
-import { CreateRole } from "@/interfaces/roleInterface";
+import { CreateRole } from "@/interfaces/ParameterInterfaces/roleInterface";
 
 const url = 'http://localhost:8000/api'
 

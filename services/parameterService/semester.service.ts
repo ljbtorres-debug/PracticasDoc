@@ -1,10 +1,10 @@
-import { CreateCareer } from "@/interfaces/ParameterInterfaces/careerInterface";
+import { CreateSemester } from "@/interfaces/ParameterInterfaces/semesterInterface";
 
 const url = 'http://localhost:8000/api'
 
-export const getCarrers = async () => {
+export const getSemesters = async () => {
     try {
-        const response = await fetch(`${url}/carrers`);
+        const response = await fetch(`${url}/semesters`);
         return response.json();
     } catch (error) {
         console.error('Error fetching carrers:', error);
@@ -12,43 +12,43 @@ export const getCarrers = async () => {
     }
 }
 
-export const createCareer = async (career: CreateCareer) => {
+export const createSemesters = async (semester: CreateSemester) => {
     try {
-        const response = await fetch(`${url}/createCareer`,
+        const response = await fetch(`${url}/createSemester`,
             {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(career)
+                body: JSON.stringify(semester)
             }
         )
         return response.json();
     } catch (error) {
-        console.error('Error creating career:', error);
+        console.error('Error creating semester:', error);
     }
 }
 
-export const updateCareer = async (career:CreateCareer, id: number) => {
+export const updateSemesters = async (semester:CreateSemester, id: number) => {
     try {
-        const response = await fetch(`${url}/updateCareer/${id}`,
+        const response = await fetch(`${url}/updateSemester/${id}`,
             {
                 method: 'PUT',
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(career)
+                body: JSON.stringify(semester)
             }
         )
         return response.json();
     } catch (error) {
-        console.error('Error updating career:', error);
+        console.error('Error updating semester:', error);
     }
 }
 
-export const removeCareer = async (id: number) => {
+export const removeSemesters = async (id: number) => {
     try {
-        const response = await fetch(`${url}/deleteCareer/${id}`,
+        const response = await fetch(`${url}/deleteSemester/${id}`,
             {
                 method: 'DELETE',
                 headers: {
