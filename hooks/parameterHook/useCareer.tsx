@@ -1,4 +1,4 @@
-import { Career, CreateCareer } from "@/interfaces/careerInterface"
+import { CreateCareer,Career } from "@/interfaces/ParameterInterfaces/careerInterface";
 import { createCareer, getCarrers, removeCareer, updateCareer } from "@/services/parameterService/career.services";
 import { useEffect, useState } from "react"
 

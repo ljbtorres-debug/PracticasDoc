@@ -1,15 +1,15 @@
 import { Modal, Pressable, Text, View } from 'react-native';
 import { DataTable } from '../generic/DataTable';
-import useCareer from '@/hooks/useCareer';
-import { Career } from '@/interfaces/careerInterface';
+import useCareer from '@/hooks/parameterHook/useCareer';
+import { Career } from '@/interfaces/ParameterInterfaces/careerInterface';
 import { useState } from 'react';
-import Carrerform from '../forms/CareerForm';
 import { Loading } from '../generic/stateComponents/loading';
+import ParameterForm from '../forms/parameterForm';
 
 
 
 const CareerComponent = () => {
-    const { careers, loading, deletedCareer, reload } = useCareer();
+    const { careers, loading, deletedCareer, reload,newCareer,editCareer,save } = useCareer();
     const [modalVisible, setModalVisible] = useState(false);
     const [mode, setMode] = useState<'create' | 'edit'>('create');
     const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
@@ -34,12 +34,12 @@ const CareerComponent = () => {
             flex: 2,
             render: (career: Career) => (
                 <View className="flex-row gap-2">
-                    <Pressable onPress={() => edit(career)} className='flex justify-center border border-blue-400 rounded-lg m-1 p-0.5'>
+                    <Pressable disabled={save} onPress={() => edit(career)} className='flex justify-center border border-blue-400 rounded-lg m-1 p-0.5'>
                         <Text className="px-1 text-blue-500">Editar</Text>
                     </Pressable>
 
-                    <Pressable onPress={() => remove(career.id)} className='flex justify-center border border-red-400 rounded-lg m-1 p-0.5'>
-                        <Text className=" text-red-500">Eliminar</Text>
+                    <Pressable disabled={save} onPress={() => remove(career.id)} className='flex justify-center border border-red-400 rounded-lg m-1 p-0.5'>
+                        <Text className=" text-red-500">{save? 'Eliminando...':'Eliminar'}</Text>
                     </Pressable>
                 </View>
             )
@@ -57,6 +57,8 @@ const CareerComponent = () => {
 
         } catch (error) {
             alert(`ocurrio un error al eliminar: ${error}`);
+        }finally{
+            reload()
         }
     }
     const create = () => {
@@ -90,12 +92,18 @@ const CareerComponent = () => {
 
             {modalVisible &&
                 <Modal visible={modalVisible}>
-                    <Carrerform
-                        career={selectedCareer}
+                    <ParameterForm
                         mode={mode}
+                        item={selectedCareer}
+                        title="Rol"
+                        placeholder="Ingrese el nombre del rol"
+                        loading={save}
+                        create={newCareer}
+                        update={editCareer}
                         onClose={() => setModalVisible(false)}
-                        onSuccess={() => reload()}
-                    />
+                        onSuccess={reload}
+                    >
+                    </ParameterForm>
                 </Modal>
             }
 
