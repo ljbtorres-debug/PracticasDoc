@@ -5,9 +5,10 @@ import { Company } from '../../interfaces/Company';
 interface Props {
     initialData?: Company;
     onSubmit: (data: Omit<Company, 'id' | 'created_at' | 'updated_at'>) => void;
+    onCancel?: () => void;
 }
 
-export const CompanyForm = ({ initialData, onSubmit }: Props) => {
+export const CompanyForm = ({ initialData, onSubmit, onCancel }: Props) => {
     const [form, setForm] = useState({
         name: initialData?.name || '',
         ruc: initialData?.ruc || '',
@@ -37,7 +38,10 @@ export const CompanyForm = ({ initialData, onSubmit }: Props) => {
             <TextInput placeholder="Email" style={styles.input} 
                 value={form.email} onChangeText={(t) => setForm({...form, email: t})} />
             <Button title="Guardar Empresa" onPress={handleSave} color="#007AFF" />
+            <br />
+            <Button title="Cancelar" onPress={() => { if (onCancel) onCancel(); }} color="#eb0d0d" />
         </View>
+        
     );
 };
 

@@ -103,18 +103,27 @@ export default function CompaniesPage() {
                         {selectedCompany ? 'Editar Empresa' : 'Nueva Empresa'}
                     </Text>
                     
+                   
+
+
                     {/* Formulario Principal de Campos */}
                     <CompanyForm 
                         initialData={selectedCompany} 
-                        onSubmit={handleSave} 
+                        onSubmit={handleSave}
+                        onCancel={() => {
+                            setModalVisible(false);
+                            setSelectedCompany(undefined);
+                            setSelectedPDFs([]);
+                        }}
                     />
 
-                    {/* 🟢 4. COMPONENTE VISUAL DE UPLOAD (Solo se muestra si estamos CREANDO, no editando) */}
+
+                    {/* 🟢. COMPONENTE VISUAL DE UPLOAD (Solo se muestra si estamos CREANDO, no editando) */}
                     {!selectedCompany && (
                         <DocumentoUploader onFilesSelected={(uris) => setSelectedPDFs(uris)} />
                     )}
 
-                    {/* 🟢 5. FEEDBACK VISUAL SI ESTÁ SUBIENDO ARCHIVOS A MINIO */}
+                    {/* 🟢. FEEDBACK VISUAL SI ESTÁ SUBIENDO ARCHIVOS A MINIO */}
                     {uploadingFiles && (
                         <View style={styles.loaderContainer}>
                             <ActivityIndicator size="large" color="#5856D6" />
@@ -122,13 +131,7 @@ export default function CompaniesPage() {
                         </View>
                     )}
 
-                    <TouchableOpacity 
-                        style={styles.cancelBtn} 
-                        onPress={() => setModalVisible(false)}
-                        disabled={uploadingFiles} // Evita cerrar el modal en plena subida
-                    >
-                        <Text style={{ color: uploadingFiles ? '#ccc' : '#666' }}>Cancelar</Text>
-                    </TouchableOpacity>
+                   
                 </View>
             </Modal>
         </View>
