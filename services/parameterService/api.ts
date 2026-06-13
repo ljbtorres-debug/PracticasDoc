@@ -1,6 +1,10 @@
 // Sustituye por tu IP real (ej: 192.168.1.15)
-const IP_COMPUTADORA = '192.168.100.61';
-export const BASE_URL = `http://${IP_COMPUTADORA}:8000/api`;
+
+// const IP_COMPUTADORA = '192.168.100.61';
+// export const BASE_URL = `http://${IP_COMPUTADORA}:8000/api`;
+
+    
+    export const BASE_URL = `http://localhost:8000/api`;
 
 export const apiFetch = async (endpoint: string, options: RequestInit = {}) => {
     // Configuramos los headers por defecto
