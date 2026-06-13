@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Company } from '../../interfaces/Company';
+import { formatDate } from '@/utils/formatDate';
 
 interface Props {
     company: Company;
@@ -9,6 +10,8 @@ interface Props {
 }
 
 export const CompanyCard = ({ company, onDelete, onEdit }: Props) => {
+    const createdText = formatDate(company.created_at);
+
     return (
         <View style={styles.card}>
             <View style={styles.info}>
@@ -18,21 +21,25 @@ export const CompanyCard = ({ company, onDelete, onEdit }: Props) => {
             </View>
 
             <View style={styles.actions}>
-                <TouchableOpacity 
-                    style={[styles.btn, styles.editBtn]} 
-                    onPress={() => onEdit(company)}
-                >
-                    <Text style={styles.btnText}>Editar</Text>
-                </TouchableOpacity>
+                <View style={styles.createdWrapper}>
+                    {createdText ? <Text style={styles.created}>{createdText}</Text> : null}
+                </View>
 
-                <TouchableOpacity 
-                    style={[styles.btn, styles.deleteBtn]} 
-                    onPress={() => onDelete(company.id)}
-                >
-                    <Text onPress={() => onDelete(company.id)} style={styles.btnText}>Eliminar</Text>
-                </TouchableOpacity>
+                <View style={styles.actionsButtons}>
+                    <TouchableOpacity 
+                        style={[styles.btn, styles.editBtn]} 
+                        onPress={() => onEdit(company)}
+                    >
+                        <Text style={styles.btnText}>Editar</Text>
+                    </TouchableOpacity>
 
-                
+                    <TouchableOpacity 
+                        style={[styles.btn, styles.deleteBtn]} 
+                        onPress={() => onDelete(company.id)}
+                    >
+                        <Text onPress={() => onDelete(company.id)} style={styles.btnText}>Eliminar</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -55,13 +62,17 @@ const styles = StyleSheet.create({
     name: { fontSize: 18, fontWeight: 'bold', color: '#1a1a1a' },
     ruc: { fontSize: 14, color: '#666', marginVertical: 2 },
     details: { fontSize: 13, color: '#999' },
+    created: { fontSize: 12, color: '#888', marginTop: 6 },
     actions: { 
         flexDirection: 'row', 
-        justifyContent: 'flex-end', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
         borderTopWidth: 1, 
         borderTopColor: '#eee', 
         paddingTop: 10 
     },
+    createdWrapper: { flex: 1, justifyContent: 'center' },
+    actionsButtons: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' },
     btn: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 6, marginLeft: 10 },
     editBtn: { backgroundColor: '#007AFF' },
     deleteBtn: { backgroundColor: '#FF3B30' },

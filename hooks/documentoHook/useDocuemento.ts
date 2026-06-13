@@ -10,7 +10,7 @@ export const useDocumentos = () => {
         
         setUploading(true);
         setError(null);
-        try {
+        try {   
             await documentoService.upload(companyId, uris);
             return true;
         } catch (e: any) {
