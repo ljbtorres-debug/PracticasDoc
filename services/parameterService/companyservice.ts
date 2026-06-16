@@ -23,6 +23,11 @@ export const companyService = {
         });
     },
 
+    // LEER UNO (GET by id)
+    getById: async (id: number): Promise<Company> => {
+        return apiFetch(`/companies/${id}`, { method: 'GET' });
+    },
+
     // BORRAR (DELETE)
    // services/companyService.ts
 delete: async (id: number): Promise<void> => {
