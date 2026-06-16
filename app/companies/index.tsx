@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, FlatList, Text, StyleSheet, Modal, TouchableOpacity, Alert, ActivityIndicator, Linking } from 'react-native'; // 👈 Añadimos Linking para abrir URLs
+import { View, FlatList, Text, StyleSheet, Modal, TouchableOpacity, Alert, ActivityIndicator, Linking } from 'react-native'; 
 import { useCompanies } from '@/hooks/companyHook/useCompany';
 import { CompanyCard } from '@/components/company/CompanyCard';
 import { CompanyForm } from '@/components/company/CompanyForm';
@@ -12,47 +12,53 @@ export default function CompaniesPage() {
     const { companies, loading, refresh } = useCompanies();
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState<Company | undefined>(undefined);
-    const [loadingCompany, setLoadingCompany] = useState(false); // Spinner de carga híbrida
+    const [loadingCompany, setLoadingCompany] = useState(false); 
 
-    const [selectedPDFs, setSelectedPDFs] = useState<string[]>([]);
+    // 🔥 CAMBIO: Ahora guarda un arreglo de objetos de archivos con su metadata limpia
+    const [selectedPDFs, setSelectedPDFs] = useState<{ uri: string; name: string }[]>([]);
     const { uploadMultiple, uploading: uploadingFiles } = useDocumentos();
 
-    // URL base para las descargas forzadas
-    const BASE_URL = 'https://api-minio.amauta.education'; // Ajusta si tu IP local cambia
+    const BASE_URL = 'https://api-minio.amauta.education'; 
 
     const handleSave = async (formData: any) => {
-        try {
-            if (selectedCompany) {
-                // 1. EDITAR EMPRESA
-                await companyService.update(selectedCompany.id, formData);
-                
-                // Si el usuario agregó nuevos PDFs estando en modo edición, los subimos también
-                if (selectedPDFs.length > 0) {
-                    await uploadMultiple(selectedCompany.id, selectedPDFs);
-                }
-                Alert.alert("Éxito", "Empresa actualizada correctamente");
-            } else {
-                // 2. CREAR EMPRESA
-                const savedCompany = await companyService.create(formData);
-                
-                if (selectedPDFs.length > 0) {
-                    const success = await uploadMultiple(savedCompany.id, selectedPDFs);
-                    if (!success) {
-                        Alert.alert("Atención", "La empresa se creó, pero hubo un problema al subir los PDFs.");
-                    }
-                } else {
-                    Alert.alert("Éxito", "Empresa creada correctamente");
+    try {
+        if (selectedCompany) {
+            // 1. Actualizar datos de la empresa
+            await companyService.update(selectedCompany.id, formData);
+            
+            // 2. Subir archivos si existen (Aquí estaba el fallo silencioso)
+            if (selectedPDFs.length > 0) {
+                const success = await uploadMultiple(selectedCompany.id, selectedPDFs);
+                if (!success) {
+                    Alert.alert("Atención", "La empresa se actualizó, pero hubo un problema al subir los PDFs.");
+                    return; // 🔥 IMPORTANTE: Detiene la ejecución aquí para que NO se cierre el modal ni se borren los PDFs de la pantalla
                 }
             }
+            Alert.alert("Éxito", "Empresa actualizada correctamente");
+        } else {
+            // 3. Crear empresa nueva
+            const savedCompany = await companyService.create(formData);
             
-            setModalVisible(false);
-            setSelectedCompany(undefined);
-            setSelectedPDFs([]); 
-            refresh();
-        } catch (e) {
-            Alert.alert("Error", "No se pudo procesar la solicitud");
+            if (selectedPDFs.length > 0) {
+                const success = await uploadMultiple(savedCompany.id, selectedPDFs);
+                if (!success) {
+                    Alert.alert("Atención", "La empresa se creó, pero hubo un problema al subir los PDFs.");
+                    return; // 🔥 Al igual que arriba, detiene el flujo para que no pierdas los datos seleccionados
+                }
+            } else {
+                Alert.alert("Éxito", "Empresa creada correctamente");
+            }
         }
-    };
+        
+        // 🚀 A ESTA PARTE SOLO LLEGARÁ SI TODO SALIÓ 100% BIEN (Empresa + PDFs exitosos)
+        setModalVisible(false);
+        setSelectedCompany(undefined);
+        setSelectedPDFs([]); 
+        refresh();
+    } catch (e) {
+        Alert.alert("Error", "No se pudo procesar la solicitud");
+    }
+};
 
     const handleDelete = async (id: number) => {
         try {
@@ -129,7 +135,6 @@ export default function CompaniesPage() {
                         {selectedCompany ? 'Editar Empresa' : 'Nueva Empresa'}
                     </Text>
                     
-                    {/* Si está descargando los datos del backend, muestra cargando */}
                     {loadingCompany ? (
                         <View style={styles.loaderContainer}>
                             <ActivityIndicator size="large" color="#5856D6" />
@@ -137,7 +142,6 @@ export default function CompaniesPage() {
                         </View>
                     ) : (
                         <>
-                            {/* Formulario Principal */}
                             <CompanyForm 
                                 initialData={selectedCompany} 
                                 onSubmit={handleSave}
@@ -148,7 +152,6 @@ export default function CompaniesPage() {
                                 }}
                             />
 
-                            {/* 🟢 COMPONENTE COMPLEMENTARIO: Lista de archivos subidos (Solo en Edición) */}
                             {selectedCompany && (selectedCompany as any).documents && (
                                 <View style={styles.documentosSeccion}>
                                     <Text style={styles.documentosTitle}>Archivos en la nube:</Text>
@@ -159,7 +162,6 @@ export default function CompaniesPage() {
                                             <View style={styles.docCard}>
                                                 <Text style={styles.docName} numberOfLines={1}>{doc.file_name}</Text>
                                                 <View style={styles.docActions}>
-                                                    {/* Botón Ver */}
                                                     <TouchableOpacity 
                                                         style={[styles.actionBtn, { backgroundColor: '#007AFF' }]} 
                                                         onPress={() => Linking.openURL(doc.file_url)}
@@ -167,7 +169,6 @@ export default function CompaniesPage() {
                                                         <Text style={styles.actionBtnText}>Ver</Text>
                                                     </TouchableOpacity>
 
-                                                    {/* Botón Descargar */}
                                                     <TouchableOpacity 
                                                         style={[styles.actionBtn, { backgroundColor: '#34C759' }]} 
                                                         onPress={() => Linking.openURL(`${BASE_URL}/api/documents/${doc.id}/download`)}
@@ -181,9 +182,9 @@ export default function CompaniesPage() {
                                 </View>
                             )}
 
-                            {/* Permitimos el uploader para ambos casos (Crear nuevos o anexar en edición) */}
                             <Text style={styles.documentosTitle}>{selectedCompany ? 'Anexar nuevos archivos:' : 'Subir Documentos:'}</Text>
-                            <DocumentoUploader onFilesSelected={(uris) => setSelectedPDFs(uris)} />
+                            {/* 🔥 CAMBIO: Escuchamos el nuevo evento con los objetos completos */}
+                            <DocumentoUploader onFilesSelected={(files) => setSelectedPDFs(files)} />
                         </>
                     )}
 
@@ -209,7 +210,6 @@ const styles = StyleSheet.create({
     modalTitle: { fontSize: 22, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
     loaderContainer: { marginVertical: 20, alignItems: 'center' },
     loaderText: { marginTop: 5, color: '#5856D6', fontWeight: '600', fontSize: 14 },
-    // 🟢 ESTILOS NUEVOS PARA LA LISTA DE ARCHIVOS
     documentosSeccion: { marginVertical: 15, maxHeight: 150 },
     documentosTitle: { fontSize: 15, fontWeight: 'bold', color: '#444', marginBottom: 8 },
     docCard: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#F1F3F5', padding: 8, borderRadius: 6, marginBottom: 6 },
